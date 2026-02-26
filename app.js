@@ -68,6 +68,40 @@ const apiRoutes = require('./routes/api');
 app.use(syncRoutes);
 app.use(apiRoutes);
 
+/**
+ * GET /dashboard
+ * Obtiene las estadísticas de la BD y renderiza la vista EJS del dashboard.
+ */
+app.get('/dashboard', async (req, res) => {
+  try {
+    const Product = require('./models/Product');
+
+    const [result] = await Product.aggregate([
+      {
+        $facet: {
+          totalProducts: [{ $count: 'count' }],
+          avgPrice: [{ $group: { _id: null, avg: { $avg: '$price' } } }],
+          byCategory: [
+            { $group: { _id: '$category', count: { $sum: 1 } } },
+            { $sort: { count: -1 } },
+          ],
+        },
+      },
+    ]);
+
+    const stats = {
+      totalProducts: result.totalProducts[0]?.count || 0,
+      avgPrice: parseFloat((result.avgPrice[0]?.avg || 0).toFixed(2)),
+      byCategory: result.byCategory,
+    };
+
+    res.render('dashboard', { stats });
+  } catch (error) {
+    console.error('❌ Error en /dashboard:', error.message);
+    res.status(500).send('Error al cargar el dashboard.');
+  }
+});
+
 /* ───────────────── Arranque del servidor ─────────────── */
 
 const PORT = process.env.PORT || 3000;
