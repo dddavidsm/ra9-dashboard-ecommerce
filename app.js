@@ -64,7 +64,9 @@ mongoose
 /* ──────────────────── Rutas ──────────────────────────── */
 
 const syncRoutes = require('./routes/sync');
+const apiRoutes = require('./routes/api');
 app.use(syncRoutes);
+app.use(apiRoutes);
 
 /* ───────────────── Arranque del servidor ─────────────── */
 
