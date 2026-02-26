@@ -9,10 +9,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const logger = require('./middleware/logger');
 
 const app = express();
 
 /* ───────────────── Middlewares globales ───────────────── */
+
+/**
+ * Middleware de logging personalizado (DRY – CA1).
+ */
+app.use(logger);
 
 /**
  * Habilita CORS para peticiones desde cualquier origen.
