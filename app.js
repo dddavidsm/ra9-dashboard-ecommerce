@@ -63,7 +63,8 @@ mongoose
 
 /* ──────────────────── Rutas ──────────────────────────── */
 
-// (Se registrarán en los siguientes pasos)
+const syncRoutes = require('./routes/sync');
+app.use(syncRoutes);
 
 /* ───────────────── Arranque del servidor ─────────────── */
 
