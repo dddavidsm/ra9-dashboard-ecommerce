@@ -68,6 +68,12 @@ const apiRoutes = require('./routes/api');
 app.use(syncRoutes);
 app.use(apiRoutes);
 
+
+// Redirigir la ruta principal al dashboard
+app.get('/', (req, res) => {
+    res.redirect('/dashboard');
+});
+
 /**
  * GET /dashboard
  * Obtiene las estadísticas de la BD y renderiza la vista EJS del dashboard.
