@@ -1,31 +1,46 @@
-# RA9 - Projecte: Dashboard d'E-commerce amb BI
+# RA9 - Dashboard d'E-commerce
 
-Aquest projecte és una aplicació web híbrida desenvolupada per complir amb els resultats d'aprenentatge del mòdul d'Entorns Servidor (RA9). 
+Aquest és un projecte de Dashboard d'E-commerce que consumeix dades de la Fake Store API. 
+Tal com es requeria per avaluar l'ús d'algorismes i funcions natives de Node.js/JavaScript, **aquest projecte funciona exclusivament amb emmagatzematge en memòria (RAM)**. No requereix la instal·lació ni configuració de cap base de dades externa (ni MongoDB ni MySQL).
 
-## Tecnologies utilitzades (CA2)
-* **Backend:** Node.js amb el framework Express.js per la seva naturalesa asíncrona i rapidesa.
-* **Frontend:** EJS (Embedded JavaScript) com a motor de plantilles per generar HTML dinàmic des del servidor, combinat amb Chart.js per a la visualització de dades.
-* **Base de Dades:** MongoDB (amb Mongoose) per la seva flexibilitat en l'emmagatzematge de documents JSON i el seu potent framework d'agregació.
-* **Integracions:** Axios per consumir APIs externes.
+## 🚀 Com instanciar i executar el projecte (Pas a pas)
 
-## Funcionalitats Principals
-1. **Sincronització de Dades (`/sync`):** Consumeix la "Fake Store API" i emmagatzema els productes en una base de dades MongoDB local (CA3, CA4).
-2. **Business Intelligence (`/api/stats`):** Endpoint REST propi que executa agregacions complexes (pipeline de MongoDB) per extreure insights com el preu mitjà i la quantitat per categoria (CA6, CA7).
-3. **Visualització (`/dashboard`):** Panell de control que renderitza els insights en gràfics mitjançant Chart.js (CA7).
+Segueix aquests passos per fer funcionar el projecte al teu entorn local:
 
-## Instruccions d'Instal·lació i Execució (Setup)
-1. Clona aquest repositori:
-   \`git clone <url-del-teu-repositori>\`
-2. Instal·la les dependències:
-   \`npm install\`
-3. Configura les variables d'entorn creant un fitxer \`.env\` a l'arrel amb:
-   \`PORT=3000\`
-   \`MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce_db\` *(o la teva URL de MongoDB)*
-4. Assegura't de tenir el servei de MongoDB actiu.
-5. Inicia l'aplicació:
-   \`npm start\` (o \`node app.js\`)
+### 1. Instal·lació de dependències
+Obre el teu terminal a la carpeta arrel del projecte i executa:
+\`\`\`bash
+npm install
+\`\`\`
+*(Això instal·larà `express`, `ejs`, `axios` i la resta de dependències necessàries. Mongoose ha estat eliminat).*
 
-## Guia d'Ús
-1. Obre el navegador i visita `http://localhost:3000/sync` per poblar la base de dades per primera vegada.
-2. Visita `http://localhost:3000/dashboard` per veure els resultats gràfics.
-3. Executa `npm test` a la consola per passar les proves unitàries amb Jest i Supertest.
+### 2. Engegar el servidor
+A la mateixa terminal, executa:
+\`\`\`bash
+npm start
+\`\`\`
+*(O alternativament `node app.js`). El servidor s'aixecarà al port 3000.*
+
+### 3. Sincronitzar les dades (Molt Important)
+Com que l'emmagatzematge és en memòria RAM, **la base de dades comença buida**. 
+Abans de poder veure el dashboard, has de carregar les dades de l'API externa a la memòria del servidor.
+1. Obre el teu navegador.
+2. Vés a la següent URL: **http://localhost:3000/sync**
+3. Veuràs un missatge JSON confirmant que els productes s'han desat correctament en memòria.
+
+### 4. Veure el Dashboard
+Un cop sincronitzat, ja pots navegar a la vista principal:
+* **http://localhost:3000/dashboard**
+* Aquí veuràs les dades processades i representades visualment mitjançant Chart.js.
+
+### 5. Consultar l'API de BI (Business Intelligence)
+Pots consultar directament l'endpoint que calcula les estadístiques (total de productes, preu mitjà i agrupació per categories) a:
+* **http://localhost:3000/api/stats**
+
+---
+
+## 🛠️ Detalls Tècnics de la Implementació
+
+* **Emmagatzematge:** S'utilitza un objecte global (`data/store.js`) per mantenir l'estat dels productes mentre el procés de Node.js estigui actiu. Si s'atura el servidor, les dades es perden.
+* **Agregacions de dades:** Les estadístiques de l'endpoint `/api/stats` es calculen fent ús exclusiu de mètodes natius de JavaScript (`.reduce()`, `.forEach()`, `.map()`, `.sort()`), demostrant el domini d'algorismes sense dependre de frameworks d'agregació de bases de dades.
+* **Arquitectura:** S'aplica el principi DRY amb l'ús de middlewares (com el `logger`) i *partials* d'EJS per a les vistes.
